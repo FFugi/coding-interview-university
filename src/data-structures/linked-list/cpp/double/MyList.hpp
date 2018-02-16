@@ -85,7 +85,7 @@ class MyList{
 		}
 
 		bool empty(){
-			return !size;	
+			return size == 0;	
 		}
 
 		void pushBack(E item){
@@ -166,6 +166,7 @@ class MyList{
 			if(size){
 				return front->value;
 			}
+
 		}
 
 		E seeBack(){
