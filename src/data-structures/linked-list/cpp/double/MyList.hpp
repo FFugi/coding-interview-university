@@ -163,11 +163,15 @@ class MyList{
 		}
 
 		E seeFront(){
-			return front->value;
+			if(size){
+				return front->value;
+			}
 		}
 
 		E seeBack(){
-			return tail->value;
+			if(size){
+				return tail->value;
+			}
 		}
 
 		E valueAt(std::size_t index){
