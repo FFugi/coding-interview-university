@@ -105,24 +105,22 @@ class MyList{
 		}
 
 		E popBack(){
-			if(size){
-				E value = tail->value;
-				Node *toDelete = tail;
-				if(size!=1){
-					tail = tail->next;
-					tail->prev = NULL;
-				}
-				else{
-					front = NULL;
-					tail = NULL;
-				}
-				delete toDelete;
-				size--;
-				return value;
+			if(empty()){
+			// place for exception
+			}
+			E value = tail->value;
+			Node *toDelete = tail;
+			if(size!=1){
+				tail = tail->next;
+				tail->prev = NULL;
 			}
 			else{
-				//place for exception
+				front = NULL;
+				tail = NULL;
 			}
+			delete toDelete;
+			size--;
+			return value;
 		}
 
 		void pushFront(E item){
@@ -163,23 +161,25 @@ class MyList{
 		}
 
 		E seeFront(){
-			if(size){
-				return front->value;
+			if(empty()){
+				//place for exception
 			}
-
+			return front->value;
 		}
 
 		E seeBack(){
-			if(size){
-				return tail->value;
+			if(empty()){
+				//place for exception
 			}
+			return tail->value;
 		}
 
 		E valueAt(std::size_t index){
-			if(index<size){
-				Node *node = getNodeAtIndex(index);
-				return node->value;
+			if(index>=size){
+				//place for exception
 			}
+			Node *node = getNodeAtIndex(index);
+			return node->value;
 		}
 
 		E valueAtFromEnd(std::size_t index){

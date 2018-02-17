@@ -68,4 +68,7 @@ TEST(SingleList, insertAt){
 	EXPECT_EQ(list.valueAt(3), 10);
 	EXPECT_EQ(list.valueAt(4), 512);
 
+	list.insertAt(4, 94);
+	EXPECT_EQ(list.valueAt(4), 94);
+
 }

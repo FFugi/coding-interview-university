@@ -98,6 +98,10 @@ class SingleList{
 			return iterator->value;
 		}
 
+		E valueAtFromEnd(std::size_t index){
+			return valueAt(size - 1 - index);
+		}
+
 		void insertAt(std::size_t index, E value){
 			if(index >= size){
 				// place for exception
@@ -118,23 +122,33 @@ class SingleList{
 		}
 		
 		E seeFront(){
-			if(size){
-		 		return front->value;	
+			if(empty()){
+				//place for exception
 			}
-			else{
-				// place for exception
-			}
+			return front->value;	
 		}
 
 		E seeBack(){
-			if(size){
-		 		return tail->value;	
+			if(empty()){
+				//place for exception
 			}
-			else{
-				// place for exception
-			}
+			return tail->value;	
 		}
 
+		void erase(std::size_t index){
+			if(index >= size){
+				//place for exception
+			}
+			Node * prev = getNodeAt(index-1);
+			Node * toDelete = prev->next;
+			prev->next = toDelete->next;
+			delete toDelete;
+			size--;
+		}
+
+		void reverse(){
+
+		}
 };
 
 #endif
