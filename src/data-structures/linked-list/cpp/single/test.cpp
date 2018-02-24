@@ -116,10 +116,24 @@ TEST(SingleList, reversing){
 
 	list.reverse();
 
+	EXPECT_EQ(list.seeFront(), 10);
+	EXPECT_EQ(list.seeBack(), 14);
 	EXPECT_EQ(list.valueAt(0), 10);
 	EXPECT_EQ(list.valueAt(1), 11);
 	EXPECT_EQ(list.valueAt(2), 12);
 	EXPECT_EQ(list.valueAt(3), 13);
 	EXPECT_EQ(list.valueAt(4), 14);
 
+	list.pushFront(42);
+	list.pushBack(44);
+
+	EXPECT_EQ(list.seeFront(), 42);
+	EXPECT_EQ(list.seeBack(), 44);
+	EXPECT_EQ(list.valueAt(0), 42);
+	EXPECT_EQ(list.valueAt(1), 10);
+	EXPECT_EQ(list.valueAt(2), 11);
+	EXPECT_EQ(list.valueAt(3), 12);
+	EXPECT_EQ(list.valueAt(4), 13);
+	EXPECT_EQ(list.valueAt(5), 14);
+	EXPECT_EQ(list.valueAt(6), 44);
 }
