@@ -1,6 +1,8 @@
 #ifndef SINGLELIST_HPP
 #define SINGLELIST_HPP
 #include <cstddef>
+#include <algorithm>
+#include <iostream>
 
 template<typename E>
 class SingleList{
@@ -41,7 +43,7 @@ class SingleList{
 		}
 
 		bool empty(){
-			return !size;
+			return size == 0;
 		}
 
 		void pushBack(E item){
@@ -139,15 +141,41 @@ class SingleList{
 			if(index >= size){
 				//place for exception
 			}
-			Node * prev = getNodeAt(index-1);
-			Node * toDelete = prev->next;
-			prev->next = toDelete->next;
+			Node * toDelete;
+			if(index == size-1){
+				toDelete = tail;
+				tail = getNodeAt(size-2);
+			}
+			else if(index == 0){
+				toDelete = front;
+				front = toDelete->next;
+			}
+			else{
+				Node * prev = getNodeAt(index-1);
+				toDelete = prev->next;
+				prev->next = toDelete->next;
+			}
 			delete toDelete;
 			size--;
 		}
 
 		void reverse(){
-
+			Node * current = front;
+			Node * mirror;
+			std::size_t position = 0;
+			if(size > 1){
+				for(std::size_t j = 0; j < size/2; j++){
+					mirror = current;
+					for(std::size_t i = position; i < size - 1 - position; i++){
+						mirror = mirror->next;		
+					}
+					E tmp = mirror->value;
+					mirror->value = current->value;
+					current->value = tmp;
+					current = current->next;
+					position++;
+				}
+			}
 		}
 };
 

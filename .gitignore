@@ -5,6 +5,9 @@ personal-9894.md
 ~$*
 *~
 
-# .o
 *.o
 *.a
+
+# tests and notes
+notes.md
+test

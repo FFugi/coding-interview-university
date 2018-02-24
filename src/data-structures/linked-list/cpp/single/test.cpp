@@ -72,3 +72,54 @@ TEST(SingleList, insertAt){
 	EXPECT_EQ(list.valueAt(4), 94);
 
 }
+
+TEST(SingleList, erasing){
+	SingleList<int> list;
+	list.pushFront(10);
+	list.pushFront(11);
+	list.pushFront(12);
+	list.pushFront(13);
+	list.pushFront(14);
+
+	list.erase(1);
+
+	EXPECT_EQ(list.seeFront(), 14);
+	EXPECT_EQ(list.seeBack(), 10);
+	EXPECT_EQ(list.valueAt(0), 14);
+	EXPECT_EQ(list.valueAt(1), 12);
+	EXPECT_EQ(list.valueAt(2), 11);
+	EXPECT_EQ(list.valueAt(3), 10);
+
+	list.erase(0);
+
+	EXPECT_EQ(list.seeFront(), 12);
+	EXPECT_EQ(list.seeBack(), 10);
+	EXPECT_EQ(list.valueAt(0), 12);
+	EXPECT_EQ(list.valueAt(1), 11);
+	EXPECT_EQ(list.valueAt(2), 10);
+	
+	list.erase(2);
+	
+	EXPECT_EQ(list.seeFront(), 12);
+	EXPECT_EQ(list.seeBack(), 11);
+	EXPECT_EQ(list.valueAt(0), 12);
+	EXPECT_EQ(list.valueAt(1), 11);
+}
+
+TEST(SingleList, reversing){
+	SingleList<int> list;
+	list.pushFront(10);
+	list.pushFront(11);
+	list.pushFront(12);
+	list.pushFront(13);
+	list.pushFront(14);
+
+	list.reverse();
+
+	EXPECT_EQ(list.valueAt(0), 10);
+	EXPECT_EQ(list.valueAt(1), 11);
+	EXPECT_EQ(list.valueAt(2), 12);
+	EXPECT_EQ(list.valueAt(3), 13);
+	EXPECT_EQ(list.valueAt(4), 14);
+
+}
