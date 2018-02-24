@@ -28,8 +28,8 @@ class SingleList{
 	public:
 		SingleList(){
 			size = 0;
-			front = NULL;
-			tail = NULL;
+			front = nullptr;
+			tail = nullptr;
 		}
 
 		// TO DO: copying constructor
@@ -49,7 +49,7 @@ class SingleList{
 		void pushBack(E item){
 			Node * node = new Node();
 			node->value = item;
-			node->next = NULL;
+			node->next = nullptr;
 			if(size > 0){
 				tail->next = node;
 			}
@@ -160,22 +160,21 @@ class SingleList{
 		}
 
 		void reverse(){
-			Node * current = front;
-			Node * mirror;
-			std::size_t position = 0;
-			if(size > 1){
-				for(std::size_t j = 0; j < size/2; j++){
-					mirror = current;
-					for(std::size_t i = position; i < size - 1 - position; i++){
-						mirror = mirror->next;		
-					}
-					E tmp = mirror->value;
-					mirror->value = current->value;
-					current->value = tmp;
-					current = current->next;
-					position++;
-				}
+			if(size < 1){
+				return;
 			}
+			Node * current = front->next;
+			Node * prev = front;
+			Node * next = nullptr;
+			front->next = nullptr;
+			front = tail;
+			tail = prev;
+			for(std::size_t i = 1; i < size; i++){
+				next = current->next;
+				current->next = prev;
+				prev = current;
+				current = next;
+			}	
 		}
 };
 
