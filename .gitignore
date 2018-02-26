@@ -7,6 +7,7 @@ personal-9894.md
 
 *.o
 *.a
+*.out
 
 # tests and notes
 notes.md

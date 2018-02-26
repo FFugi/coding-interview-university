@@ -248,6 +248,18 @@ class MyList{
 			if(size < 2){
 				return;
 			}
+			Node * iterator = front;
+			std::swap(front, tail);
+			for(std::size_t i = 0; i <  size; i++){
+				std::swap(iterator->next, iterator->prev);
+				iterator = iterator->next;
+			}
+		}
+
+		void notCleverReverse(){
+			if(size < 2){
+				return;
+			}
 			Node *iterationFront = front;
 			Node *iterationTail = tail;
 			for(std::size_t i = 0; i < size/2; i++){
