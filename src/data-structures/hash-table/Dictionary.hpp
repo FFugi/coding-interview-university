@@ -89,7 +89,7 @@ class Dictionary{
 		}	
 
 		~Dictionary(){
-
+			delete [] dictionary;
 		}
 
 		void add(std::string key, T value){
@@ -117,7 +117,7 @@ class Dictionary{
 
 		T get(std::string key){
 			std::size_t index = Hash(key);				
-			while(dictionary[index].key != key){
+			while(dictionary[index].key != key && dictionary[index].status != st_free){
 				index++;
 				if(index >= size){
 					index = 0;
@@ -136,6 +136,7 @@ class Dictionary{
 				jumps++;
 			}	
 			if(jumps == size){
+				// todo: exception will be here
 				return;
 			}
 			else{

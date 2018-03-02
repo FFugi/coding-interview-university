@@ -2,21 +2,30 @@
 #include "gtest/gtest.h"
 #include <stdio.h>
 #include <iostream>
+#include <ctime>
+
+#define X_EXPECT_EQ(a, b, format, ...) \
+	EXPECT_EQ(a, b); \
+	if (a != b) printf(format, __VA_ARGS__);
+
+std::string generateString(std::size_t length){
+	std::string alfanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	std::string output;
+	for(std::size_t i = 0; i < length; i++){
+		int position = rand() % alfanum.size();
+		output += alfanum[position];	
+	}
+	return output;
+}
+
+template <typename T>
+struct testRecord {
+	std::string key;
+	T record;
+};
 
 TEST(ConfirmingSetupOk, dummy){
 	std::cout << sizeof(bool);
-}
-
-
-TEST(Dictionary, get){
-	Dictionary<int> dict;
-	dict.add("Andrzej", 42);
-	dict.add("Mieciu", 256);
-	dict.add("Monika", 128);
-	dict.add("Wiesiu", 64);
-	dict.add("Zosia", 1024);
-	dict.add("Anna", 32);
-	EXPECT_EQ(dict.get("Andrzej"), 42);
 }
 
 TEST(Dictionary, exists){
@@ -46,7 +55,7 @@ TEST(Dictionary, exists){
 	dict.remove("Mieciu");
 	dict.add("Wiesiu", 256);
 	EXPECT_TRUE(dict.exists("Wiesiu"));	
-	
+
 
 }
 
@@ -87,4 +96,25 @@ TEST(Dictionary, printing){
 	dict.add("Marek", 32);
 	dict.add("Marej", 32);
 	std::cout << dict;
+}
+
+TEST(Dictionary, get){
+	srand(time(0));
+	std::size_t records = 100;
+	Dictionary<int> dict;
+
+	testRecord<int> * testArr = new testRecord<int>[records];
+	for(std::size_t i = 0; i < records; i++){
+		std::size_t length = rand() % 6 + 1; 
+		int record = rand() % 100 - 50;
+		testArr[i].key = generateString(length);	
+		testArr[i].record = record;
+		dict.add(testArr[i].key, testArr[i].record);
+	}
+	for(std::size_t i = 0; i < records; i++){
+		std::cout << i << ".\t" < testArr[i].key << std::endl;
+	}
+	for(std::size_t i = 0; i < records; i++){
+		X_EXPECT_EQ(dict.get(testArr[i].key), testArr[i].record, "%i, %s, %i\n", i, testArr[i].key.c_str(), testArr[i].record);	
+	}
 }
