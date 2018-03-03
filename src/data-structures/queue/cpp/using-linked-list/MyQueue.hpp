@@ -2,6 +2,7 @@
 #define MYQUEUE_HPP
 #include <cstddef>
 #include <cstdio>
+#include <exception>
 
 template <typename T>
 class MyQueue{
@@ -18,6 +19,13 @@ class MyQueue{
 		std::size_t size;
 
 	public:
+
+		class ExceptionEmpty : public std::exception{
+			virtual const char* what() const throw(){
+				return "This queue is empty";
+			}
+		};
+
 		MyQueue(){
 			size = 0;
 			head = nullptr;
@@ -44,6 +52,7 @@ class MyQueue{
 
 		T dequeue(){ 
 			if(size == 0){
+				throw ExceptionEmpty();
 				// place for exception
 			}
 			T value = head->value;
@@ -64,6 +73,7 @@ class MyQueue{
 
 		T seeHead(){
 			if(size == 0){
+				throw ExceptionEmpty();
 				// place for exception
 			}
 			return head->value;
@@ -71,6 +81,7 @@ class MyQueue{
 
 		T seeTail(){
 			if(size == 0){
+				throw ExceptionEmpty();
 				// place for exception
 			}
 			return tail->value;

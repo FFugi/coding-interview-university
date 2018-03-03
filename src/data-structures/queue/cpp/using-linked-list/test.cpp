@@ -1,9 +1,15 @@
 #include "MyQueue.hpp"
 #include "gtest/gtest.h"
-
+#include <iostream>
 
 TEST(CheckingSetup, dummy){
 
+}
+
+TEST(MyQueue_exceptionTest, exceptions){
+	MyQueue<float> que;
+//	EXPECT_THROW(que.seeHead(), std::exception);
+	EXPECT_THROW(que.seeHead(), MyQueue<float>::ExceptionEmpty);
 }
 
 TEST(MyQueue, size){
