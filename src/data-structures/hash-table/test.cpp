@@ -25,7 +25,6 @@ struct testRecord {
 };
 
 TEST(ConfirmingSetupOk, dummy){
-	std::cout << sizeof(bool);
 }
 
 TEST(Dictionary, exists){
@@ -112,7 +111,7 @@ TEST(Dictionary, get){
 		dict.add(testArr[i].key, testArr[i].record);
 	}
 	for(std::size_t i = 0; i < records; i++){
-		std::cout << i << ".\t" < testArr[i].key << std::endl;
+		std::cout << i << ".\t" << testArr[i].key << std::endl;
 	}
 	for(std::size_t i = 0; i < records; i++){
 		X_EXPECT_EQ(dict.get(testArr[i].key), testArr[i].record, "%i, %s, %i\n", i, testArr[i].key.c_str(), testArr[i].record);	

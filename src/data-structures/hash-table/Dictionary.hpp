@@ -44,14 +44,6 @@ class Dictionary{
 			out << "Deleted: " << dict.deleted << " occupied: " << dict.occupied << "\n";
 			return out;
 		}	
-
-		std::size_t Hash(std::string key){
-			std::size_t hash = 7;
-			for(std::size_t i = 0; i < key.size(); i++){
-				hash += hash*31 + key[i];
-			}
-			return hash % size;	
-		}
 		
 		std::size_t Hash(std::string key, std::size_t size){
 			std::size_t hash = 7;
@@ -94,7 +86,7 @@ class Dictionary{
 
 		void add(std::string key, T value){
 			occupied++;
-			std::size_t index = Hash(key);
+			std::size_t index = Hash(key, this->size);
 			std::size_t firstIndex = index;
 			while(dictionary[index].status == st_occupied){
 				index++;
@@ -116,18 +108,23 @@ class Dictionary{
 		}	
 
 		T get(std::string key){
-			std::size_t index = Hash(key);				
-			while(dictionary[index].key != key && dictionary[index].status != st_free){
+			std::size_t index = Hash(key, this->size);				
+			std::size_t jumps = 0;
+			while((dictionary[index].key != key && dictionary[index].status != st_free) || jumps == size){
 				index++;
+				jumps++;
 				if(index >= size){
 					index = 0;
 				}
+			}
+			if(jumps == size){
+				// todo: exception will be here
 			}
 			return dictionary[index].value;
 		}
 	
 		void remove(std::string key){
-			std::size_t index = Hash(key);
+			std::size_t index = Hash(key, this->size);
 			std::size_t jumps = 0;
 			while((dictionary[index].key != key && dictionary[index].status == st_occupied)
 					|| (dictionary[index].status == st_deleted)
@@ -149,7 +146,7 @@ class Dictionary{
 		}
 
 		bool exists(std::string key){
-			std::size_t index = Hash(key);
+			std::size_t index = Hash(key, this->size);
 			std::size_t jumps = 0;
 			while((dictionary[index].key != key && dictionary[index].status == st_occupied)
 					|| (dictionary[index].status == st_deleted)
