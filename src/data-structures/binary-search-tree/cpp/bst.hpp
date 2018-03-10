@@ -2,6 +2,7 @@
 #define BST_HPP
 #include <cstddef>
 #include <iostream>
+#include <sstream>
 #include <stack>
 
 template <typename T>
@@ -96,14 +97,15 @@ class Bst{
 			return true;
 		}
 
-		void printValues(){
+		void printValues(std::stringstream & sstream){
 			if(nodeCount == 0){
 				return;
 			}
 			else if(nodeCount == 1){
-				std::cout << root->value << std::endl;
+				sstream << root->value << " ";
 				return;
 			}
+			std::stringstream ss;
 			std::stack<Node*> toPrint;
 			Node * current = root;
 			toPrint.push(current);
@@ -117,7 +119,7 @@ class Bst{
 					current = current->lesser;
 				}
 				else{
-					std::cout << current->value << std::endl;
+					sstream << current->value << " ";
 					printed++;
 					toPrint.pop();
 					if(current->greater != nullptr){

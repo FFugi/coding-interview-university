@@ -1,5 +1,8 @@
 #include "bst.hpp"
 #include "gtest/gtest.h"
+#include <sstream>
+#include <iostream>
+#include <string>
 
 TEST(CheckingSetupOk, dummy){
 }
@@ -58,23 +61,25 @@ TEST(BinarySearchTree, print){
 	tree.insert(-303);
 	tree.insert(-301);
 	tree.insert(-298);
-	tree.printValues();
-}
-
-TEST(BinarySearchTree, print2){
-	Bst<int> tree;	
-	tree.insert(42);
-	tree.insert(0);
-	tree.insert(201);
-	tree.insert(-300);
-	tree.insert(300);
-	tree.insert(255);
-	tree.insert(100000);
-	tree.insert(-10000);
-	tree.insert(-303);
-	tree.insert(-301);
-	tree.insert(-298);
-	tree.printValues();
+	std::stringstream ss;
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-303 -301 -300 -298 0 42 201 ");
+	tree.insert(1000);
+	tree.insert(-1000);
+	ss.str("");
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-1000 -303 -301 -300 -298 0 42 201 1000 ");
+	tree.insert(2);
+	tree.insert(2);
+	ss.str("");
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-1000 -303 -301 -300 -298 0 2 42 201 1000 ");
+	tree.insert(3);
+	tree.insert(123);
+	tree.insert(321);
+	ss.str("");
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-1000 -303 -301 -300 -298 0 2 3 42 123 201 321 1000 ");
 }
 
 TEST(BinarySearchTree, getHeight){
@@ -106,3 +111,6 @@ TEST(BinarySearchTree, getHeight){
 	EXPECT_EQ(tree.getHeight(), 9);
 }
 
+TEST(BinarySearchTree, deletion){
+	Bst<int> tree;	
+}
