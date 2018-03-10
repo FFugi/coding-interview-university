@@ -17,7 +17,7 @@ class MyList{
 		Node *tail;
 		std::size_t size;
 
-		inline Node *getNodeAtIndex(std::size_t index){
+		Node *getNodeAtIndex(std::size_t index){
 			Node *searchNode;
 			if(index < size/2){
 				searchNode = front;

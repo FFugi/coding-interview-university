@@ -2,13 +2,14 @@
 #define BST_HPP
 #include <cstddef>
 #include <iostream>
+#include <stack>
 
 template <typename T>
-class bst{
+class Bst{
 	private:
 
 		struct Node{
-			Node() : greater(nullptr), lesser(nullptr) {}
+			Node() : greater(nullptr), lesser(nullptr), parent(nullptr) {}
 			Node * greater;
 			Node * lesser;
 			Node * parent;
@@ -20,93 +21,216 @@ class bst{
 
 	public:
 
-		bst() : nodeCount(0){
+		Bst() : nodeCount(0){
+			root = new Node();
 		}
 
-		bst(T value) : nodeCount(1){
-			root = new Node();
-			root->value = value; 
-			root->parent = nullptr; 
-			root->greater = nullptr; 
-			root->lesser = nullptr; 
-		}
 
 		void insert(T value){
-			Node * toInsert = new Node();
-			toInsert->value = value;
-			toInsert->parent = nullptr;
 			if(nodeCount == 0){
-				root = toInsert;
 				root->value = value;
 				nodeCount++;
 				return;
 			}
-			Node * searchNode = root;
+			Node * toInsert = new Node();
+			toInsert->value = value;
+			toInsert->parent = nullptr;
+			Node * iterator = root;
 			bool found = false;
 			while(!found){
-				//std::cout << searchNode->value << std::endl;
-				if(value > searchNode->value){
-					if(searchNode->greater == nullptr){
+				if(value > iterator->value){
+					if(iterator->greater == nullptr){
 						found = true;
 					}
 					else{
-						searchNode = searchNode->greater;
+						iterator = iterator->greater;
 					}	
 				}	
-				else if(value < searchNode->value){
-					if(searchNode->lesser == nullptr){
+				else if(value < iterator->value){
+					if(iterator->lesser == nullptr){
 						found = true;
 					}
 					else{
-						searchNode = searchNode->lesser;
+						iterator = iterator->lesser;
 					}
 				}
 				else{
-					// to do exception when exists
+					return;
 				}
 			}
-			toInsert->parent = searchNode;
-			if(value < searchNode->value){
-				searchNode->lesser = toInsert;
+			toInsert->parent = iterator;
+			if(value < iterator->value){
+				iterator->lesser = toInsert;
 			}
 			else{
-				searchNode->greater = toInsert;
+				iterator->greater = toInsert;
 			}
 			nodeCount++;
 		}
 
 		T getMin(){
-			Node * searchNode = root;
-			while(searchNode->lesser != nullptr){
-				searchNode = searchNode->lesser;
+			Node * iterator = root;
+			while(iterator->lesser != nullptr){
+				iterator = iterator->lesser;
 			}
-			return searchNode->value;
+			return iterator->value;
 		}
 
 		T getMax(){
-			Node * searchNode = root;
-			while(searchNode->greater != nullptr){
-				searchNode = searchNode->greater;
+			Node * iterator = root;
+			while(iterator->greater != nullptr){
+				iterator = iterator->greater;
 			}
-			return searchNode->value;
+			return iterator->value;
 		}
 
 		std::size_t getNodeCount(){
 			return nodeCount;
 		}
 
-		bool isInTree(){
-			return false;
+		bool isInTree(T value){
+			Node * iterator = root;
+			while(iterator->value != value){
+				if(value < iterator->value && iterator->lesser != nullptr){
+					iterator = iterator->lesser;	
+				}
+				else if(value > iterator->value && iterator->greater != nullptr){
+					iterator = iterator->greater;	
+				}
+				else{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		void printValues(){
+			if(nodeCount == 0){
+				return;
+			}
+			else if(nodeCount == 1){
+				std::cout << root->value << std::endl;
+				return;
+			}
+			std::stack<Node*> toPrint;
+			Node * current = root;
+			toPrint.push(current);
+			bool goingLeft = true;
+			std::size_t printed = 0;
+			while(printed != nodeCount){	
+				if(goingLeft){
+					toPrint.push(current);
+				}
+				if(current->lesser != nullptr && goingLeft){
+					current = current->lesser;
+				}
+				else{
+					std::cout << current->value << std::endl;
+					printed++;
+					toPrint.pop();
+					if(current->greater != nullptr){
+						current = current->greater;
+						goingLeft = true;
+					}
+					else{
+						current = toPrint.top();
+						goingLeft = false;
+					}
+				}
+			}
+		}
 
-			
+		std::size_t getHeight(){
+			if(nodeCount == 0){
+				return 0;
+			}
+			struct heightInfoNode{
+				heightInfoNode():node(nullptr), height(0){};
+				Node * node;
+				std::size_t height;
+			};
+			std::size_t maxHeight = 1;
+			std::size_t currentHeight = 1;
+			std::size_t visited = 1;
+			Node * iterator = root;
+			std::stack<heightInfoNode> nodes;
+			heightInfoNode current;
+			bool goingLeft = true;
+			while(visited != nodeCount){
+				if(maxHeight < currentHeight){
+					maxHeight = currentHeight;	
+				}
+				if(goingLeft){
+					current.node = iterator;
+					current.height = currentHeight;
+					nodes.push(current);
+					visited++;
+				}
+				if(iterator->lesser != nullptr && goingLeft){
+					currentHeight++;
+					iterator = iterator->lesser;
+				}
+				else{
+					nodes.pop();
+					if(iterator->greater != nullptr){
+						currentHeight++;
+						iterator = iterator->greater;
+						goingLeft = true;
+					}
+					else{
+						iterator = nodes.top().node;
+						currentHeight = nodes.top().height;
+						goingLeft = false;
+					}
+				}
+			}
+			return maxHeight;
+		}
+
+		void deleteValue(T value){
 
 		}
 
+		~Bst(){
 
 
+		}
 };
 
+
 #endif
+//void printValues(){
+//	if(nodeCount == 0){
+//		return;
+//	}
+//	else if(nodeCount == 1){
+//		std::cout << root->value << std::endl;
+//		return;
+//	}
+//	std::stack<Node*> toPrint;
+//	Node * current = root;
+//	toPrint.push(current);
+//	bool goingLeft = true;
+//	std::size_t printed = 0;
+//	while(printed != nodeCount){	
+//		if(goingLeft){
+//			toPrint.push(current);
+//		}
+//		if(current->lesser != nullptr && goingLeft){
+//			current = current->lesser;
+//		}
+//		else{
+//			std::cout << current->value << std::endl;
+//			printed++;
+//			toPrint.pop();
+//			if(current->greater != nullptr){
+//				current = current->greater;
+//				goingLeft = true;
+//			}
+//			else{
+//				current = toPrint.top();
+//				goingLeft = false;
+//			}
+//		}
+//	}
+//}
