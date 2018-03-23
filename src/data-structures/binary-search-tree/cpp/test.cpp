@@ -111,6 +111,113 @@ TEST(BinarySearchTree, getHeight){
 	EXPECT_EQ(tree.getHeight(), 9);
 }
 
-TEST(BinarySearchTree, deletion){
+TEST(BinarySearchTree, deletionWithNoChildren){
+	std::stringstream ss;
 	Bst<int> tree;	
+	tree.insert(0);
+	tree.insert(-10);
+	tree.insert(-5);
+	tree.insert(20);
+	tree.insert(31);
+	tree.insert(25);
+	tree.deleteValue(25);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-10 -5 0 20 31 ");
+	EXPECT_EQ(tree.getNodeCount(), 5);
+	ss.str("");
+	tree.deleteValue(5);							// value that doesn't exist
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-10 -5 0 20 31 ");
+	EXPECT_EQ(tree.getNodeCount(), 5);
+	ss.str("");
+	tree.deleteValue(31);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-10 -5 0 20 ");
+	EXPECT_EQ(tree.getNodeCount(), 4);
+}
+
+TEST(BinarySearchTree, deletionWithOneChild){
+	std::stringstream ss;
+	Bst<int> tree;	
+	tree.insert(0);
+	tree.insert(-20);
+	tree.insert(-30);
+	tree.insert(-40);
+	tree.insert(-60);
+	tree.insert(10);
+	tree.insert(20);
+	tree.insert(30);
+	tree.insert(50);
+	tree.deleteValue(20);
+	tree.deleteValue(-20);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-60 -40 -30 0 10 30 50 ");
+	EXPECT_EQ(tree.getNodeCount(), 7);
+}
+
+TEST(BinarySearchTree, deletionWithTwoChildren){
+	std::stringstream ss;
+	Bst<int> tree;	
+	tree.insert(0);
+	tree.insert(-20);
+	tree.insert(-30);
+	tree.insert(-40);
+	tree.insert(-60);
+	tree.insert(10);
+	tree.insert(20);
+	tree.insert(30);
+	tree.insert(50);
+	tree.insert(40);
+	tree.insert(15);
+	tree.insert(5);
+	tree.insert(45);
+	tree.insert(60);
+	tree.insert(39);
+	tree.deleteValue(10);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-60 -40 -30 -20 0 5 15 20 30 39 40 45 50 60 ");
+	EXPECT_EQ(tree.getNodeCount(), 14);
+
+	ss.str("");
+	tree.deleteValue(40);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-60 -40 -30 -20 0 5 15 20 30 39 45 50 60 ");
+	EXPECT_EQ(tree.getNodeCount(), 13);
+
+	ss.str("");
+	tree.deleteValue(15);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-60 -40 -30 -20 0 5 20 30 39 45 50 60 ");
+	EXPECT_EQ(tree.getNodeCount(), 12);
+
+	ss.str("");
+	tree.deleteValue(50);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-60 -40 -30 -20 0 5 20 30 39 45 60 ");
+	EXPECT_EQ(tree.getNodeCount(), 11);
+
+}
+
+TEST(BinarySearchTree, deletionRoot){
+	std::stringstream ss;
+	Bst<int> tree;
+	tree.insert(0);
+	tree.insert(-10);
+	tree.insert(-15);
+	tree.insert(5);
+	tree.insert(15);
+	tree.insert(10);
+	
+	tree.deleteValue(0);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-15 -10 5 10 15 ");
+	EXPECT_EQ(tree.getNodeCount(), 5);
+
+	ss.str("");
+	tree.deleteValue(5);
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-15 -10 10 15 ");
+	EXPECT_EQ(tree.getNodeCount(), 4);
+
+
 }

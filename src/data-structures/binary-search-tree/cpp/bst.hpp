@@ -1,7 +1,6 @@
 #ifndef BST_HPP
 #define BST_HPP
 #include <cstddef>
-#include <iostream>
 #include <sstream>
 #include <stack>
 
@@ -56,6 +55,7 @@ class Bst{
 					}
 				}
 				else{
+					delete toInsert;
 					return;
 				}
 			}
@@ -181,11 +181,69 @@ class Bst{
 			return maxHeight;
 		}
 
-		void deleteValue(T value){
-			
-		}
+//		void printNode(Node * which, std::string message){
+//
+//			std::cout << message << " val: " << which->value <<std::endl;
+//			if(which->parent!=nullptr){
+//				std::cout << message << " parent: " << which->parent->value <<std::endl;
+//			}
+//			if(which->greater!=nullptr){
+//				std::cout << message << " greater " << which->greater->value <<std::endl;
+//			}
+//			if(which->lesser!=nullptr){
+//				std::cout << message << " lesser " << which->lesser->value <<std::endl;
+//			}
+//			std::cout << std::endl;
+//		}
 
-		~Bst(){
+		void deleteValue(T value){
+			Node * iterator = root;
+			while(iterator->value != value){
+				if(value < iterator->value && iterator->lesser != nullptr){
+					iterator = iterator->lesser;	
+				}
+				else if(value > iterator->value && iterator->greater != nullptr){
+					iterator = iterator->greater;	
+				}
+				else{
+					return;					// value not found, so we can return
+				}
+			}
+			if(iterator->lesser != nullptr && iterator->greater != nullptr){
+				Node * min = getMinOfSubtree(iterator->greater);		// is there any clever choice?
+				if(min == iterator->greater){			// when min is the root of sub-tree
+					iterator->greater = min->greater;
+					if(min->greater != nullptr){
+						min->greater->parent = iterator;
+					}
+				}
+				else {
+					min->parent->lesser = min->greater;
+					if(min->greater != nullptr){
+						min->greater->parent = min->parent;	
+					}
+				}
+				std::swap(iterator->value, min->value);
+				delete min;
+			}
+			else if(iterator->lesser == nullptr && iterator->greater == nullptr){
+				(iterator == iterator->parent->lesser ? 
+				 iterator->parent->lesser : iterator->parent->greater) = nullptr;
+				delete iterator;
+			}
+			else{
+				Node * child = iterator->greater != nullptr ?
+				   	iterator->greater : iterator->lesser;
+				iterator = iterator->parent;
+				Node ** toDelete = value < iterator->value ?
+				   	&iterator->lesser : &iterator->greater;
+				delete *toDelete;
+				*toDelete = child;	
+			}
+			nodeCount--;
+	 	}
+
+		void deleteTree(){
 			std::stack<Node*> toDelete;
 			Node * current = root;
 			Node * greaterFromDeleted;
@@ -214,6 +272,11 @@ class Bst{
 					}
 				}
 			}
+			nodeCount = 0;
+		}
+
+		~Bst(){
+			deleteTree();
 		}
 
 	private:

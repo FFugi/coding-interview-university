@@ -38,7 +38,8 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 # House-keeping build targets.
 
-all : $(TESTS)
+all : $(TESTS) 
+	@valgrind --leak-check=yes ./test
 
 clean :
 	rm -f $(TESTS) gtest.a gtest_main.a *.o
