@@ -23,18 +23,17 @@ class Bst{
 	public:
 
 		Bst() : nodeCount(0){
-			root = new Node();
 		}
 
 		void insert(T value){
 			if(nodeCount == 0){
+				root = new Node();
 				root->value = value;
 				nodeCount++;
 				return;
 			}
 			Node * toInsert = new Node();
 			toInsert->value = value;
-			toInsert->parent = nullptr;
 
 			Node * nearest = findNearest(value, root);
 			toInsert->parent = nearest;
@@ -160,58 +159,11 @@ class Bst{
 		}
 
 		T getSuccessor(T value){
-
 		}
 
 		~Bst(){
 			deleteTree();
 		}
-
-	private:
-
-		Node * findNearest(T value, Node * subRoot){
-			Node * iterator = subRoot;
-			while(iterator->value != value){
-				if(value < iterator->value && iterator->lesser != nullptr){
-					iterator = iterator->lesser;	
-				}
-				else if(value > iterator->value && iterator->greater != nullptr){
-					iterator = iterator->greater;	
-				}
-				else{
-					break;
-				}
-			}
-			return iterator;
-		}
-
-		void deleteValueInSubtree(T value, Node * subRoot){
-			Node * iterator = subRoot;
-			iterator = findNearest(value, subRoot);
-			if(iterator->value != value){
-				return;				// value not found, so we can return
-			}
-			if(iterator->lesser != nullptr && iterator->greater != nullptr){
-				Node * min = getMinOfSubtree(iterator->greater);	// is there any clever choice?
-				iterator->value = min->value;
-				deleteValueInSubtree(min->value, min);
-				return;
-			}
-			else if(iterator->lesser == nullptr && iterator->greater == nullptr){
-				(iterator == iterator->parent->lesser ? 
-				 iterator->parent->lesser : iterator->parent->greater) = nullptr;
-				delete iterator;
-			}
-			else{
-				Node * child = iterator->greater != nullptr ?
-				   	iterator->greater : iterator->lesser;
-				Node ** toDelete = iterator == iterator->parent->lesser ?
-				   	&iterator->parent->lesser : &iterator->parent->greater;
-				delete *toDelete;
-				*toDelete = child;	
-			}
-			nodeCount--;
-	 	}
 
 		void deleteTree(){
 			std::stack<Node*> toDelete;
@@ -244,6 +196,63 @@ class Bst{
 			}
 			nodeCount = 0;
 		}
+
+	private:
+
+		Node * findNearest(T value, Node * subRoot){
+			Node * iterator = subRoot;
+			while(iterator->value != value){
+				if(value < iterator->value && iterator->lesser != nullptr){
+					iterator = iterator->lesser;	
+				}
+				else if(value > iterator->value && iterator->greater != nullptr){
+					iterator = iterator->greater;	
+				}
+				else{
+					break;
+				}
+			}
+			return iterator;
+		}
+
+		void deleteValueInSubtree(T value, Node * subRoot){
+			Node * nearest = findNearest(value, subRoot);
+			if(nearest->value != value){
+				return;				// value not found, so we can return
+			}
+			if(nearest == root 
+					&& (nearest->lesser == nullptr || nearest->greater == nullptr) ){
+				if(nearest->lesser == nullptr && nearest->greater == nullptr){
+					delete root;
+				}
+				else{
+					Node * toDelete = root;
+					root = nearest->lesser == nullptr ? nearest->greater : nearest->lesser;
+					delete toDelete;
+					root->parent = nullptr;
+				}
+			}
+			else if(nearest->lesser != nullptr && nearest->greater != nullptr){
+				Node * min = getMinOfSubtree(nearest->greater);	// is there any clever choice?
+				nearest->value = min->value;
+				deleteValueInSubtree(min->value, min);
+				return;
+			}
+			else if(nearest->lesser == nullptr && nearest->greater == nullptr){
+				(nearest == nearest->parent->lesser ? 
+				 nearest->parent->lesser : nearest->parent->greater) = nullptr;
+				delete nearest;
+			}
+			else{
+				Node * child = nearest->greater != nullptr ?
+				   	nearest->greater : nearest->lesser;
+				Node ** toDelete = nearest == nearest->parent->lesser ?
+				   	&nearest->parent->lesser : &nearest->parent->greater;
+				delete *toDelete;
+				*toDelete = child;	
+			}
+			nodeCount--;
+	 	}
 
 		Node * getMinOfSubtree(Node * subRoot){
 			Node * iterator = subRoot;

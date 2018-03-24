@@ -203,21 +203,96 @@ TEST(BinarySearchTree, deletionRoot){
 	Bst<int> tree;
 	tree.insert(0);
 	tree.insert(-10);
-	tree.insert(-15);
 	tree.insert(5);
 	tree.insert(15);
 	tree.insert(10);
 	
 	tree.deleteValue(0);
 	tree.printValues(ss);
-	EXPECT_EQ(ss.str(), "-15 -10 5 10 15 ");
-	EXPECT_EQ(tree.getNodeCount(), 5);
+	EXPECT_EQ(ss.str(), "-10 5 10 15 ");
+	EXPECT_EQ(tree.getNodeCount(), 4);
 
 	ss.str("");
 	tree.deleteValue(5);
 	tree.printValues(ss);
-	EXPECT_EQ(ss.str(), "-15 -10 10 15 ");
-	EXPECT_EQ(tree.getNodeCount(), 4);
+	EXPECT_EQ(ss.str(), "-10 10 15 ");
+	EXPECT_EQ(tree.getNodeCount(), 3);
+
+	tree.deleteTree();
+	tree.insert(123);
+	tree.insert(124);
+	tree.deleteValue(123);
+
+	ss.str("");
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "124 ");
+	EXPECT_EQ(tree.getNodeCount(), 1);
+}
+
+TEST(BinarySearchTree, deletionNonExisting){
+	std::stringstream ss;
+	Bst<int> tree;
+	tree.insert(0);
+	tree.insert(-10);
+	tree.insert(-15);
+	tree.insert(5);
+	tree.insert(15);
+	tree.insert(10);
+	tree.deleteValue(666);
+
+	tree.printValues(ss);
+	EXPECT_EQ(ss.str(), "-15 -10 0 5 10 15 ");
+	EXPECT_EQ(tree.getNodeCount(), 6);
+
+
+}
+
+TEST(BinarySearchTree, deletionWholeTree){
+	Bst<int> tree;
+	// one node
+	tree.insert(232);
+	tree.deleteValue(232);
+	EXPECT_EQ(tree.getNodeCount(), 0);
+
+	// all greater 
+	tree.insert(151);
+	tree.insert(189);
+	tree.insert(207);
+	tree.deleteValue(151);
+	tree.deleteValue(189);
+	tree.deleteValue(207);
+
+	EXPECT_EQ(tree.getNodeCount(), 0);
+
+	// all lesser
+	tree.insert(10);
+	tree.insert(5);
+	tree.insert(0);
+	tree.deleteValue(10);
+	tree.deleteValue(5);
+	tree.deleteValue(0);
+
+	EXPECT_EQ(tree.getNodeCount(), 0);
+
+	// both sides
+	tree.insert(5);
+	tree.insert(8);
+	tree.insert(0);
+	tree.deleteValue(5);
+	tree.deleteValue(8);
+	tree.deleteValue(0);
+
+	EXPECT_EQ(tree.getNodeCount(), 0);
+}
+
+TEST(BinarySearchTree, getSuccessor){
+	Bst<int> tree;
+	tree.insert(10);
+	tree.insert(40);
+	tree.insert(70);
+	tree.insert(0);
+	tree.insert(-15);
+	EXPECT_EQ(tree.getSuccessor(-15), 0);
 
 
 }
