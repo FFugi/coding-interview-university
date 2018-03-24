@@ -26,7 +26,6 @@ class Bst{
 			root = new Node();
 		}
 
-
 		void insert(T value){
 			if(nodeCount == 0){
 				root->value = value;
@@ -36,36 +35,18 @@ class Bst{
 			Node * toInsert = new Node();
 			toInsert->value = value;
 			toInsert->parent = nullptr;
-			Node * iterator = root;
-			bool found = false;
-			while(!found){
-				if(value > iterator->value){
-					if(iterator->greater == nullptr){
-						found = true;
-					}
-					else{
-						iterator = iterator->greater;
-					}	
-				}	
-				else if(value < iterator->value){
-					if(iterator->lesser == nullptr){
-						found = true;
-					}
-					else{
-						iterator = iterator->lesser;
-					}
-				}
-				else{
-					delete toInsert;
-					return;
-				}
+
+			Node * nearest = findNearest(value, root);
+			toInsert->parent = nearest;
+			if(value == nearest->value){
+				delete toInsert;
+				return;
 			}
-			toInsert->parent = iterator;
-			if(value < iterator->value){
-				iterator->lesser = toInsert;
+			else if(value < nearest->value){
+				nearest->lesser = toInsert;
 			}
 			else{
-				iterator->greater = toInsert;
+				nearest->greater = toInsert;
 			}
 			nodeCount++;
 		}
@@ -83,19 +64,11 @@ class Bst{
 		}
 
 		bool isInTree(T value){
-			Node * iterator = root;
-			while(iterator->value != value){
-				if(value < iterator->value && iterator->lesser != nullptr){
-					iterator = iterator->lesser;	
-				}
-				else if(value > iterator->value && iterator->greater != nullptr){
-					iterator = iterator->greater;	
-				}
-				else{
-					return false;
-				}
+			Node * nearest = findNearest(value, root);
+			if(nearest->value == value){
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		void printValues(std::stringstream & sstream){
@@ -182,23 +155,12 @@ class Bst{
 			return maxHeight;
 		}
 
-//		void printNode(Node * which, std::string message){
-//
-//			std::cout << message << " val: " << which->value <<std::endl;
-//			if(which->parent!=nullptr){
-//				std::cout << message << " parent: " << which->parent->value <<std::endl;
-//			}
-//			if(which->greater!=nullptr){
-//				std::cout << message << " greater " << which->greater->value <<std::endl;
-//			}
-//			if(which->lesser!=nullptr){
-//				std::cout << message << " lesser " << which->lesser->value <<std::endl;
-//			}
-//			std::cout << std::endl;
-//		}
-
 		void deleteValue(T value){
 			deleteValueInSubtree(value, root);
+		}
+
+		T getSuccessor(T value){
+
 		}
 
 		~Bst(){
@@ -207,7 +169,7 @@ class Bst{
 
 	private:
 
-		void deleteValueInSubtree(T value, Node * subRoot){
+		Node * findNearest(T value, Node * subRoot){
 			Node * iterator = subRoot;
 			while(iterator->value != value){
 				if(value < iterator->value && iterator->lesser != nullptr){
@@ -217,8 +179,17 @@ class Bst{
 					iterator = iterator->greater;	
 				}
 				else{
-					return;					// value not found, so we can return
+					break;
 				}
+			}
+			return iterator;
+		}
+
+		void deleteValueInSubtree(T value, Node * subRoot){
+			Node * iterator = subRoot;
+			iterator = findNearest(value, subRoot);
+			if(iterator->value != value){
+				return;				// value not found, so we can return
 			}
 			if(iterator->lesser != nullptr && iterator->greater != nullptr){
 				Node * min = getMinOfSubtree(iterator->greater);	// is there any clever choice?
