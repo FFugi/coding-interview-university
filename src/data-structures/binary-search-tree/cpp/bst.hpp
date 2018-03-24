@@ -2,6 +2,7 @@
 #define BST_HPP
 #include <cstddef>
 #include <sstream>
+#include <iostream>
 #include <stack>
 
 template <typename T>
@@ -197,7 +198,17 @@ class Bst{
 //		}
 
 		void deleteValue(T value){
-			Node * iterator = root;
+			deleteValueInSubtree(value, root);
+		}
+
+		~Bst(){
+			deleteTree();
+		}
+
+	private:
+
+		void deleteValueInSubtree(T value, Node * subRoot){
+			Node * iterator = subRoot;
 			while(iterator->value != value){
 				if(value < iterator->value && iterator->lesser != nullptr){
 					iterator = iterator->lesser;	
@@ -210,21 +221,10 @@ class Bst{
 				}
 			}
 			if(iterator->lesser != nullptr && iterator->greater != nullptr){
-				Node * min = getMinOfSubtree(iterator->greater);		// is there any clever choice?
-				if(min == iterator->greater){			// when min is the root of sub-tree
-					iterator->greater = min->greater;
-					if(min->greater != nullptr){
-						min->greater->parent = iterator;
-					}
-				}
-				else {
-					min->parent->lesser = min->greater;
-					if(min->greater != nullptr){
-						min->greater->parent = min->parent;	
-					}
-				}
-				std::swap(iterator->value, min->value);
-				delete min;
+				Node * min = getMinOfSubtree(iterator->greater);	// is there any clever choice?
+				iterator->value = min->value;
+				deleteValueInSubtree(min->value, min);
+				return;
 			}
 			else if(iterator->lesser == nullptr && iterator->greater == nullptr){
 				(iterator == iterator->parent->lesser ? 
@@ -234,9 +234,8 @@ class Bst{
 			else{
 				Node * child = iterator->greater != nullptr ?
 				   	iterator->greater : iterator->lesser;
-				iterator = iterator->parent;
-				Node ** toDelete = value < iterator->value ?
-				   	&iterator->lesser : &iterator->greater;
+				Node ** toDelete = iterator == iterator->parent->lesser ?
+				   	&iterator->parent->lesser : &iterator->parent->greater;
 				delete *toDelete;
 				*toDelete = child;	
 			}
@@ -275,11 +274,6 @@ class Bst{
 			nodeCount = 0;
 		}
 
-		~Bst(){
-			deleteTree();
-		}
-
-	private:
 		Node * getMinOfSubtree(Node * subRoot){
 			Node * iterator = subRoot;
 			while(iterator->lesser != nullptr){
